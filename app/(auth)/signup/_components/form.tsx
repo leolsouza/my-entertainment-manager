@@ -1,7 +1,7 @@
 "use client"
 
 import { ActionResponse, initialState } from "@/app/actions/auth"
-import { signIn } from "@/app/actions/auth/signin"
+import { signUp } from "@/app/actions/auth/signup"
 import FormInput from "@/components/FormInput"
 import PasswordInput from "@/components/PasswordInput"
 import SubmitErrorMessage from "@/components/SubmitErrorMessage"
@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import React, { useActionState } from "react"
 import toast from "react-hot-toast"
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const router = useRouter()
 
   const [state, formAction, isPending] = useActionState<
@@ -18,9 +18,9 @@ export default function SignInForm() {
     FormData
   >(async (_, formData: FormData) => {
     try {
-      const result = await signIn(formData)
+      const result = await signUp(formData)
       if (result.success) {
-        toast.success("Signed in successfully")
+        toast.success("Signed up successfully")
         router.push("/dashboard")
         router.refresh()
       }
@@ -52,9 +52,16 @@ export default function SignInForm() {
         disabled={isPending}
         error={state.errors?.password?.[0]}
       />
+      <PasswordInput
+        label="Confirm Password"
+        value="confirmPassword"
+        placeholder="Enter your confirm your password"
+        disabled={isPending}
+        error={state.errors?.confirmPassword?.[0]}
+      />
       <div className="space-y-2">
         <Button type="submit" className="w-full" isLoading={isPending}>
-          Sign in
+          Sign up
         </Button>
         <SubmitErrorMessage message={state.message} />
       </div>

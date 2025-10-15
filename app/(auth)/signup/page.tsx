@@ -1,10 +1,10 @@
 import Link from "next/link"
 import React from "react"
-import SignInForm from "./_components/form"
+import SignUpForm from "./_components/form"
 import Image from "next/image"
 import Logo from "@/assets/logo.png"
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <div className="bg-primary flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8 dark:bg-[#121212]">
       <div className="sm:mx-auto sm:w-[600px]">
@@ -17,17 +17,17 @@ export default function SignInPage() {
           />
 
           <h1 className="mb-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Sign in your account
+            Create a new account
           </h1>
-          <SignInForm />
+          <SignUpForm />
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don&apos;t have an account?{" "}
+              Already have an account?{" "}
               <Link
-                href="/signup"
+                href="/signin"
                 className="font-medium text-gray-900 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>
