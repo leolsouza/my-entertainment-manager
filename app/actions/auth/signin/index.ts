@@ -3,7 +3,7 @@
 import api from "@/lib/supabase-client"
 import SignInSchema from "./schema"
 import { ActionResponse } from ".."
-import { storeSession } from "@/lib/auth"
+import { storeAuthUser, storeSession } from "@/lib/auth"
 import z from "zod"
 
 export async function signIn(formData: FormData): Promise<ActionResponse> {
@@ -25,7 +25,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
       password,
     })
 
-    if (data.session === null) {
+    if (data.session === null || data.user === null) {
       return {
         success: false,
         message: "Invalid email or password",
@@ -34,6 +34,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
     }
 
     await storeSession(data.session)
+    await storeAuthUser(data.user)
 
     return {
       success: true,

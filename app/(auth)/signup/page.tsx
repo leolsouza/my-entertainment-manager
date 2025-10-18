@@ -15,7 +15,6 @@ export default function SignUpPage() {
             width={400}
             className="mx-auto pt-8 pb-10"
           />
-
           <h1 className="mb-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             Create a new account
           </h1>

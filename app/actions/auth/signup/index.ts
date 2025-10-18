@@ -2,7 +2,7 @@
 
 import api from "@/lib/supabase-client"
 import { ActionResponse } from ".."
-import { storeSession } from "@/lib/auth"
+import { storeAuthUser, storeSession } from "@/lib/auth"
 import z from "zod"
 import SignUpSchema from "./schema"
 
@@ -12,8 +12,11 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirmPassword") as string
 
-    const validationResult = SignUpSchema.safeParse({ email, password, confirmPassword })
-    console.log({ validationResult })
+    const validationResult = SignUpSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    })
     if (!validationResult.success) {
       return {
         success: false,
@@ -27,7 +30,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
       password,
     })
 
-    if (data.session === null) {
+    if (data.session === null || data.user === null) {
       return {
         success: false,
         message: "Invalid email or password",
@@ -36,17 +39,18 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
     }
 
     await storeSession(data.session)
+    await storeAuthUser(data.user)
 
     return {
       success: true,
-      message: 'Account created successfully',
+      message: "Account created successfully",
     }
   } catch (error) {
     console.error("Sign up error:", error)
     return {
       success: false,
-      message: 'An error occurred while creating your account',
-      error: 'Failed to create account',
+      message: "An error occurred while creating your account",
+      error: "Failed to create account",
     }
   }
 }

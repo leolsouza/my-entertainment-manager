@@ -9,3 +9,8 @@ export function mockDelay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+export function unixTimestampToDate(unixTimestamp: number): Date {
+  const date = new Date(unixTimestamp * 1000) 
+  return date
+}
+

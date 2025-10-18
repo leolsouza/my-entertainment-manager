@@ -6,12 +6,14 @@ import FormInput from "@/components/FormInput"
 import PasswordInput from "@/components/PasswordInput"
 import SubmitErrorMessage from "@/components/SubmitErrorMessage"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import React, { useActionState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import React, { useActionState, useEffect } from "react"
 import toast from "react-hot-toast"
 
 export default function SignInForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const unauthenticated = searchParams.get("unauthenticated") === "true"
 
   const [state, formAction, isPending] = useActionState<
     ActionResponse,
@@ -34,6 +36,12 @@ export default function SignInForm() {
       }
     }
   }, initialState)
+
+  useEffect(() => {
+    if (unauthenticated) {
+      toast.error("You must be signed in to access this page")
+    }
+  }, [unauthenticated])
 
   return (
     <form className="space-y-6" action={formAction}>
