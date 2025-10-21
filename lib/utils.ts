@@ -14,3 +14,7 @@ export function unixTimestampToDate(unixTimestamp: number): Date {
   return date
 }
 
+export function resetPage(params: URLSearchParams):void{
+  params.delete("page")
+}
+

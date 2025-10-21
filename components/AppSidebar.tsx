@@ -1,18 +1,4 @@
-import {
-  Home,
-  Inbox,
-  Calendar,
-  Search,
-  Settings,
-  User2,
-  ChevronUp,
-  Projector,
-  Plus,
-  Star,
-  EthernetPort,
-  Book,
-  Video,
-} from "lucide-react"
+import { User2, Star, EthernetPort, Book, Video } from "lucide-react"
 
 import {
   Sidebar,
@@ -20,40 +6,36 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
   SidebarSeparator,
 } from "./ui/sidebar"
 import Logo from "@/assets/logo.png"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "./ui/button"
 import { User } from "@supabase/supabase-js"
 
 const items = [
   {
     title: "Favorites",
-    url: "/dashboard",
+    url: "/dashboard/favorites",
     icon: Star,
   },
   {
     title: "Movies",
-    url: "#",
+    url: "/dashboard/movies",
     icon: EthernetPort,
   },
   {
     title: "Series",
-    url: "#",
+    url: "/dashboard/series",
     icon: Video,
   },
   {
     title: "Books",
-    url: "#",
+    url: "/dashboard/books",
     icon: Book,
   },
 ]

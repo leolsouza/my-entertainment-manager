@@ -20,7 +20,7 @@ export default async function MainLayout({
     <SidebarProvider>
       <AppSidebar authUser={JSON.parse(authUser)} />
       <div className="w-full">
-        <div className="px-4">{children}</div>
+        <div className="px-4 py-6">{children}</div>
       </div>
     </SidebarProvider>
   )
