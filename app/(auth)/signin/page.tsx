@@ -1,5 +1,5 @@
 import Link from "next/link"
-import React from "react"
+import React, { Suspense } from "react"
 import SignInForm from "./_components/form"
 import Image from "next/image"
 import Logo from "@/assets/logo.png"
@@ -19,7 +19,9 @@ export default function SignInPage() {
           <h1 className="mb-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             Sign in your account
           </h1>
-          <SignInForm />
+          <Suspense>
+            <SignInForm />
+          </Suspense>
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{" "}

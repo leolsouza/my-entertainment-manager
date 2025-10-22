@@ -1,5 +1,5 @@
 import { Movie } from "@/types/movie"
-import tmdb from "./tmdb-instance"
+import tmdb from "../../../lib/tmdb-instance"
 
 export async function fetchMovies({
   query,
@@ -16,7 +16,7 @@ export async function fetchMovies({
   if (query) {
     endpoint = "/search/movie"
     params.query = query
-  }  else if (genreId) {
+  } else if (genreId) {
     endpoint = "/discover/movie"
     params.with_genres = genreId
   } else if (page) {
@@ -31,6 +31,6 @@ export async function fetchMovies({
   }
 
   return {
-    ...data
+    ...data,
   }
 }
