@@ -9,7 +9,7 @@ export async function fetchMovies({
   query?: string
   genreId?: number
   page?: number
-}): Promise<TMDBQuery<Movie>> {
+}): Promise<GetQuery<Movie>> {
   let endpoint = "/movie/popular"
   const params: Record<string, string | number> = { page }
 

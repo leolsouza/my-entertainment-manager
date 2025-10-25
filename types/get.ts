@@ -1,4 +1,4 @@
-type TMDBQuery<T> = {
+type GetQuery<T> = {
   results: T[],
   page: number
   total_pages:number
