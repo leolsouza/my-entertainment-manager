@@ -1,4 +1,4 @@
-import tmdb from "../../../lib/tmdb-instance"
+import tmdb from "@/lib/tmdb-instance"
 
 export async function fetchMovieGenres() {
   try {

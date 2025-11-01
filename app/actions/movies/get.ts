@@ -39,8 +39,6 @@ export async function fetchMovies({
 
 export async function getFavoriteMovieIds(): Promise<number[]> {
   const { data, error } = await api.from("movies").select("tmdb_id")
-  console.log("data", data)
-  console.log("error", error)
   if (error) {
     console.error("Error getting favorite movies:", error)
     return []

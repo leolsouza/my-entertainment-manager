@@ -1,13 +1,13 @@
 import { Suspense } from "react"
-import { fetchSeriesGenres } from "@/app/actions/fetch/genres"
 import { Genre } from "@/types/genre"
 import { Loader2 } from "lucide-react"
 import { PaginationComponent } from "@/components/Pagination"
-import { fetchSeries } from "@/app/actions/fetch/series"
 import SeriesCard from "./_components/SeriesCard"
 import SeriesSearch from "./_components/SeriesSearch"
 import FilterByGenre from "@/components/FilterByGenre"
 import EmptyData from "@/components/EmptyData"
+import { fetchSeriesGenres } from "@/app/actions/genres/get"
+import { fetchSeries } from "@/app/actions/series/get"
 
 type Props = {
   searchParams: Promise<{ query?: string; genre?: string; page?: string }>

@@ -1,10 +1,10 @@
-import { fetchBooks } from "@/app/actions/fetch/books"
 import { Loader2 } from "lucide-react"
 import React, { Suspense } from "react"
 import BooksCard from "./_components/BooksCard"
 import EmptyData from "@/components/EmptyData"
 import { PaginationComponent } from "@/components/Pagination"
 import BooksSearch from "./_components/BooksSearch"
+import { fetchBooks } from "@/app/actions/books/get"
 
 type Props = {
   searchParams: Promise<{
@@ -31,7 +31,6 @@ export default async function BooksPage({ searchParams }: Props) {
       <h1 className="mb-4 text-2xl font-bold">Books</h1>
       <div className="mb-4 flex flex-row items-center justify-between gap-2">
         <BooksSearch />
-        {/* <FilterByGenre genres={genres} /> */}
       </div>
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
         {books.results.length > 0 ? (
