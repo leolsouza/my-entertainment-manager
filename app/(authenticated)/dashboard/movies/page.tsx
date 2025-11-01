@@ -1,13 +1,13 @@
-import { fetchMovies } from "@/app/actions/fetch/movies"
 import { Suspense } from "react"
 import MovieSearch from "./_components/MoviesSearch"
-import MoviesCard from "./_components/MoviesCard"
 import { fetchMovieGenres } from "@/app/actions/fetch/genres"
 import { Genre } from "@/types/genre"
 import { Loader2 } from "lucide-react"
 import { PaginationComponent } from "@/components/Pagination"
 import FilterByGenre from "@/components/FilterByGenre"
 import EmptyData from "@/components/EmptyData"
+import { fetchMovies, getFavoriteMovieIds } from "@/app/actions/movies/get"
+import MoviesList from "./_components/MoviesList"
 
 type Props = {
   searchParams: Promise<{ query?: string; genre?: string; page?: string }>
@@ -20,6 +20,7 @@ export default async function MoviesPage({ searchParams }: Props) {
   const page = params?.page ? Number(params.page) : 1
 
   const movies = await fetchMovies({ query, genreId, page })
+  const favoriteMovieIds = await getFavoriteMovieIds()
   const genres: Genre[] = await fetchMovieGenres()
 
   return (
@@ -32,12 +33,10 @@ export default async function MoviesPage({ searchParams }: Props) {
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
         {movies.results.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-3 lg:grid-cols-5">
-              {movies.results.map((movie) => (
-                <MoviesCard movie={movie} key={movie.id} />
-              ))}
-            </div>
-
+            <MoviesList
+              movies={movies.results}
+              favoriteIds={favoriteMovieIds}
+            />
             <PaginationComponent totalPages={movies.total_pages} />
           </>
         ) : (

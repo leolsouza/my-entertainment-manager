@@ -1,7 +1,7 @@
 "use client"
 
 import Image, { StaticImageData } from "next/image"
-import React, { useState } from "react"
+import React, { useOptimistic, useState, useTransition } from "react"
 import { Card, CardContent, CardFooter } from "./ui/card"
 import {
   Tooltip,
@@ -9,19 +9,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip"
+import { Button } from "./ui/button"
+import { Star } from "lucide-react"
 import NoPosterAvailable from "@/assets/no-poster-available.jpg"
+import { cn } from "@/lib/utils"
 
-type FavoriteCardProps = {
+type FavoriteCardProp = {
   src?: string
   title?: string
   noAvailableImage?: StaticImageData
+  isFavorite?: boolean
+  onFavoriteChange: () => Promise<void>
 }
 
-export default function FavoriteCard({
-  noAvailableImage,
+export default function FavoriteCard<T>({
   src,
   title,
-}: FavoriteCardProps) {
+  noAvailableImage,
+  isFavorite = false,
+  onFavoriteChange,
+}: FavoriteCardProp) {
   const [imgSrc, setImgSrc] = useState(
     src || noAvailableImage?.src || NoPosterAvailable.src
   )
@@ -29,7 +36,7 @@ export default function FavoriteCard({
   const safeTitle = title ?? "No available"
 
   return (
-    <Card className="flex h-full flex-col gap-1 overflow-hidden pt-0 pb-3">
+    <Card className="relative flex h-full flex-col gap-1 overflow-hidden pt-0 pb-3">
       <CardContent className="relative aspect-[2/3] w-full p-0">
         <Image
           src={imgSrc}
@@ -39,6 +46,32 @@ export default function FavoriteCard({
           sizes="(max-width: 768px) 100vw, 300px"
           onError={() => setImgSrc(NoPosterAvailable.src)}
         />
+
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "absolute top-1 right-1 rounded-full bg-black/50 text-yellow-400 transition-colors hover:bg-black/70",
+                  "cursor-pointer opacity-100"
+                )}
+                onClick={onFavoriteChange}
+              >
+                <Star
+                  className={cn(
+                    "h-5 w-5 transition-all",
+                    isFavorite ? "fill-yellow-400" : ""
+                  )}
+                />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isFavorite ? "Remove from favorites" : "Add to favorites"}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </CardContent>
 
       <CardFooter className="mt-auto flex h-14 items-center justify-center px-2 text-center font-medium">
