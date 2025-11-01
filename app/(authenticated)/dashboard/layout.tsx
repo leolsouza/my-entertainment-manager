@@ -1,6 +1,6 @@
 import AppSidebar from "@/components/AppSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { cookies } from "next/headers"
+import { getAuthUser, getSession } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
 export default async function MainLayout({
@@ -8,9 +8,8 @@ export default async function MainLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookieStore = await cookies()
-  const authToken = cookieStore.get("auth_token")?.value
-  const authUser = cookieStore.get("auth_user")?.value
+  const authToken = await getSession()
+  const authUser = await getAuthUser()
 
   if (!authToken || !authUser) {
     redirect("/signin?unauthenticated=true")
@@ -18,7 +17,7 @@ export default async function MainLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar authUser={JSON.parse(authUser)} />
+      <AppSidebar authUser={authUser} />
       <div className="w-full">
         <div className="px-4 py-6">{children}</div>
       </div>

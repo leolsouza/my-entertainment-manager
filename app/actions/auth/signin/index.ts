@@ -1,6 +1,6 @@
 "use server"
 
-import api from "@/lib/supabase-client"
+import { authApi } from "@/lib/supabase-client"
 import SignInSchema from "./schema"
 import { ActionResponse } from ".."
 import { storeAuthUser, storeSession } from "@/lib/auth"
@@ -20,7 +20,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
       }
     }
 
-    const { data } = await api.auth.signInWithPassword({
+    const { data } = await authApi.signInWithPassword({
       email,
       password,
     })
