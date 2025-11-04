@@ -1,9 +1,26 @@
 import React from "react"
-import FavoriteCard from "@/components/FavoriteCard"
 import { Series } from "@/types/series"
+import FavoriteCard from "@/components/FavoriteCard"
 
-export default function SeriesCard({ series }: { series: Series }) {
+export default function SeriesCard({
+  series,
+  isFavorite,
+  onFavoriteChange,
+}: {
+  series: Series
+  isFavorite: boolean
+  onFavoriteChange: (
+    series: Series,
+    alreadyAFavorite?: boolean
+  ) => Promise<void>
+}) {
   const src = `https://image.tmdb.org/t/p/w500${series.poster_path}`
-  console.log({ series })
-  return <FavoriteCard title={series.name} src={src} />
+  return (
+    <FavoriteCard
+      title={series.name}
+      src={src}
+      isFavorite={isFavorite}
+      onFavoriteChange={() => onFavoriteChange(series)}
+    />
+  )
 }

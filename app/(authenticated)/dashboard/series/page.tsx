@@ -2,12 +2,12 @@ import { Suspense } from "react"
 import { Genre } from "@/types/genre"
 import { Loader2 } from "lucide-react"
 import { PaginationComponent } from "@/components/Pagination"
-import SeriesCard from "./_components/SeriesCard"
 import SeriesSearch from "./_components/SeriesSearch"
 import FilterByGenre from "@/components/FilterByGenre"
 import EmptyData from "@/components/EmptyData"
 import { fetchSeriesGenres } from "@/app/actions/genres/get"
-import { fetchSeries } from "@/app/actions/series/get"
+import { fetchSeries, getFavoriteSeriesIds } from "@/app/actions/series/get"
+import SeriesList from "./_components/SeriesList"
 
 type Props = {
   searchParams: Promise<{ query?: string; genre?: string; page?: string }>
@@ -21,6 +21,7 @@ export default async function SeriesPage({ searchParams }: Props) {
 
   const series = await fetchSeries({ query, genreId, page })
   const genres: Genre[] = await fetchSeriesGenres()
+  const favoriteIds = await getFavoriteSeriesIds()
 
   return (
     <main className="p-6">
@@ -32,11 +33,7 @@ export default async function SeriesPage({ searchParams }: Props) {
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
         {series.results.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-3 lg:grid-cols-5">
-              {series.results.map((show) => (
-                <SeriesCard series={show} key={show.id} />
-              ))}
-            </div>
+            <SeriesList series={series.results} favoriteIds={favoriteIds} />
             <PaginationComponent totalPages={series.total_pages} />
           </>
         ) : (

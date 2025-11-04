@@ -1,3 +1,4 @@
+import { api } from "@/lib/supabase-client"
 import tmdb from "@/lib/tmdb-instance"
 import { Series } from "@/types/series"
 
@@ -33,4 +34,13 @@ export async function fetchSeries({
   return {
     ...data,
   }
+}
+
+export async function getFavoriteSeriesIds(): Promise<number[]> {
+  const { data, error } = await api.from("series").select("tmdb_id")
+  if (error) {
+    console.error("Error getting favorite series:", error)
+    return []
+  }
+  return data?.map((show) => show.tmdb_id) ?? []
 }
