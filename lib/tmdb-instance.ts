@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"
 
 const tmdb = axios.create({
   baseURL: "https://api.themoviedb.org/3",
@@ -9,6 +9,6 @@ const tmdb = axios.create({
   headers: {
     Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`,
   },
-});
+})
 
-export default tmdb;
+export default tmdb

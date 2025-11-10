@@ -4,7 +4,9 @@ import BooksCard from "./_components/BooksCard"
 import EmptyData from "@/components/EmptyData"
 import { PaginationComponent } from "@/components/Pagination"
 import BooksSearch from "./_components/BooksSearch"
-import { fetchBooks } from "@/app/actions/books/get"
+import { fetchBooks, getFavoriteBookIds } from "@/app/actions/books/get"
+import BooksList from "./_components/BooksList"
+import { getFavoriteMovieIds } from "@/app/actions/movies/get"
 
 type Props = {
   searchParams: Promise<{
@@ -26,6 +28,8 @@ export default async function BooksPage({ searchParams }: Props) {
     startIndex,
     maxResults,
   })
+  const favoriteBookIds = await getFavoriteBookIds()
+
   return (
     <main className="p-6">
       <h1 className="mb-4 text-2xl font-bold">Books</h1>
@@ -35,11 +39,7 @@ export default async function BooksPage({ searchParams }: Props) {
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
         {books.results.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-3 lg:grid-cols-5">
-              {books.results.map((book) => (
-                <BooksCard book={book} key={book.id} />
-              ))}
-            </div>
+            <BooksList books={books.results} favoriteIds={favoriteBookIds} />
 
             <PaginationComponent totalPages={books.total_pages} />
           </>

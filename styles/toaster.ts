@@ -1,4 +1,4 @@
-import { DefaultToastOptions } from "react-hot-toast";
+import { DefaultToastOptions } from "react-hot-toast"
 
 export const toasterStyle: DefaultToastOptions = {
   duration: 5000,

@@ -1,11 +1,11 @@
-import { User2, Star, EthernetPort, Book, Video } from "lucide-react"
-
+import { User2, EthernetPort, Book, Video } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -17,25 +17,38 @@ import Link from "next/link"
 import Image from "next/image"
 import { User } from "@supabase/supabase-js"
 
-const items = [
-  {
-    title: "Favorites",
-    url: "/dashboard/favorites",
-    icon: Star,
-  },
+const discoverRoutes = [
   {
     title: "Movies",
-    url: "/dashboard/movies",
+    url: "/dashboard/discover/movies",
     icon: EthernetPort,
   },
   {
     title: "Series",
-    url: "/dashboard/series",
+    url: "/dashboard/discover/series",
     icon: Video,
   },
   {
     title: "Books",
-    url: "/dashboard/books",
+    url: "/dashboard/discover/books",
+    icon: Book,
+  },
+]
+
+const favoriteRoutes = [
+  {
+    title: "Movies",
+    url: "/dashboard/favorites/movies",
+    icon: EthernetPort,
+  },
+  {
+    title: "Series",
+    url: "/dashboard/favorites/series",
+    icon: Video,
+  },
+  {
+    title: "Books",
+    url: "/dashboard/favorites/books",
     icon: Book,
   },
 ]
@@ -57,9 +70,27 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
       <SidebarSeparator style={{ width: "auto" }} />
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Favorites</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {favoriteRoutes.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Discover</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {discoverRoutes.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>

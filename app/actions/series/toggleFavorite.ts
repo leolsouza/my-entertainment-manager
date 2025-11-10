@@ -19,7 +19,7 @@ export async function addFavorite(series: Series): Promise<ActionResponse> {
       },
     ])
 
-    revalidatePath("/dashboard/series")
+    revalidatePath("/dashboard/discover/series")
 
     return {
       success: true,

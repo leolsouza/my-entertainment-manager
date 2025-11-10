@@ -1,4 +1,5 @@
 import googleBooks from "@/lib/google-books-instance"
+import { api } from "@/lib/supabase-client"
 import { Book } from "@/types/book"
 
 export async function fetchBooks({
@@ -37,4 +38,13 @@ export async function fetchBooks({
     total_pages: totalPages,
     total_results: totalItems,
   }
+}
+
+export async function getFavoriteBookIds(): Promise<string[]> {
+  const { data, error } = await api.from("books").select("google_books_id")
+  if (error) {
+    console.error("Error getting favorite books:", error)
+    return []
+  }
+  return data?.map((book) => book.google_books_id) ?? []
 }

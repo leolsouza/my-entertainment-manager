@@ -10,11 +10,10 @@ export function mockDelay(ms: number) {
 }
 
 export function unixTimestampToDate(unixTimestamp: number): Date {
-  const date = new Date(unixTimestamp * 1000) 
+  const date = new Date(unixTimestamp * 1000)
   return date
 }
 
-export function resetPage(params: URLSearchParams):void{
+export function resetPage(params: URLSearchParams): void {
   params.delete("page")
 }
-

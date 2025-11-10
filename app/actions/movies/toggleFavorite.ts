@@ -20,7 +20,7 @@ export async function addFavorite(movie: Movie): Promise<ActionResponse> {
       },
     ])
 
-    revalidatePath("/dashboard/movies")
+    revalidatePath("/dashboard/discover/movies")
 
     return {
       success: true,
