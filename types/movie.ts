@@ -3,5 +3,6 @@ export type Movie = {
   title: string
   poster_path: string | null
   release_date: string
+  overview: string
   genre_ids: number[]
 }

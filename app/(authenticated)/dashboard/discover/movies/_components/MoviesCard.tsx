@@ -6,10 +6,12 @@ export default function MoviesCard({
   movie,
   isFavorite,
   onFavoriteChange,
+  handleOpenModal,
 }: {
   movie: Movie
   isFavorite: boolean
   onFavoriteChange: (movie: Movie, alreadyAFavorite?: boolean) => Promise<void>
+  handleOpenModal?: () => void
 }) {
   const src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`
   return (
@@ -18,6 +20,7 @@ export default function MoviesCard({
       src={src}
       isFavorite={isFavorite}
       onFavoriteChange={() => onFavoriteChange(movie)}
+      handleOpenModal={handleOpenModal}
     />
   )
 }

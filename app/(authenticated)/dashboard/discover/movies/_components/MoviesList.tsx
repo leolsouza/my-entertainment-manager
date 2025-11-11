@@ -1,5 +1,5 @@
 "use client"
-import { useOptimistic, useTransition } from "react"
+import { useOptimistic, useState, useTransition } from "react"
 import MoviesCard from "./MoviesCard"
 import { Movie } from "@/types/movie"
 import {
@@ -7,6 +7,7 @@ import {
   removeFavorite,
 } from "@/app/actions/movies/toggleFavorite"
 import toast from "react-hot-toast"
+import MovieModal from "./MovieModal"
 
 export default function MoviesList({
   movies,
@@ -15,6 +16,7 @@ export default function MoviesList({
   movies: Movie[]
   favoriteIds: number[]
 }) {
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
   const [optimisticFavoriteIds, setOptimisticFavoriteIds] = useOptimistic(
     favoriteIds,
     (oldValues, newValue: number) => {
@@ -57,8 +59,15 @@ export default function MoviesList({
           onFavoriteChange={() =>
             handleToggleFavorite(movie, isFavorite(movie.id))
           }
+          handleOpenModal={() => setSelectedMovie(movie)}
         />
       ))}
+      {selectedMovie && (
+        <MovieModal
+          movie={selectedMovie}
+          closeModal={() => setSelectedMovie(null)}
+        />
+      )}
     </div>
   )
 }
