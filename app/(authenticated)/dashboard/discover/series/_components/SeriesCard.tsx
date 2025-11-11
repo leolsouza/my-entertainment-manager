@@ -6,6 +6,7 @@ export default function SeriesCard({
   series,
   isFavorite,
   onFavoriteChange,
+  handleOpenModal,
 }: {
   series: Series
   isFavorite: boolean
@@ -13,6 +14,7 @@ export default function SeriesCard({
     series: Series,
     alreadyAFavorite?: boolean
   ) => Promise<void>
+  handleOpenModal?: () => void
 }) {
   const src = `https://image.tmdb.org/t/p/w500${series.poster_path}`
   return (
@@ -21,6 +23,7 @@ export default function SeriesCard({
       src={src}
       isFavorite={isFavorite}
       onFavoriteChange={() => onFavoriteChange(series)}
+      handleOpenModal={handleOpenModal}
     />
   )
 }

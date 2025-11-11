@@ -7,28 +7,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
-import { Movie } from "@/types/movie"
+import { Series } from "@/types/series"
 import React from "react"
 
-type MovieModalProps = {
-  movie: Movie | null
+type SeriesModalProps = {
+  series: Series | null
   closeModal?: () => void
 }
-export default function MovieModal({ movie, closeModal }: MovieModalProps) {
+export default function SeriesModal({ series, closeModal }: SeriesModalProps) {
   return (
-    <Dialog open={!!movie} onOpenChange={closeModal}>
+    <Dialog open={!!series} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{movie?.title} - Information</DialogTitle>
+          <DialogTitle>{series?.name} - Information</DialogTitle>
         </DialogHeader>
         <Separator className="my-1" />
         <div className="grid gap-4">
-          <ReadingInput title="Title" value={movie?.original_title ?? ""} />
+          <ReadingInput title="Title" value={series?.original_name ?? ""} />
           <ReadingInput
-            title="Release Date"
-            value={movie?.release_date ?? ""}
+            title="First air date"
+            value={series?.first_air_date ?? ""}
           />
-          <ReadingTextarea title="Overview" value={movie?.overview ?? ""} />
+          <ReadingTextarea title="Overview" value={series?.overview ?? ""} />
         </div>
       </DialogContent>
     </Dialog>

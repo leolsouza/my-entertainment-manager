@@ -1,5 +1,5 @@
 "use client"
-import { useOptimistic, useTransition } from "react"
+import { useOptimistic, useState, useTransition } from "react"
 import {
   addFavorite,
   removeFavorite,
@@ -7,6 +7,7 @@ import {
 import toast from "react-hot-toast"
 import { Series } from "@/types/series"
 import SeriesCard from "./SeriesCard"
+import SeriesModal from "./SeriesModal"
 
 export default function SeriesList({
   series,
@@ -15,6 +16,7 @@ export default function SeriesList({
   series: Series[]
   favoriteIds: number[]
 }) {
+  const [selectedSeries, setSelectedSeries] = useState<Series | null>(null)
   const [optimisticFavoriteIds, setOptimisticFavoriteIds] = useOptimistic(
     favoriteIds,
     (oldValues, newValue: number) => {
@@ -57,8 +59,15 @@ export default function SeriesList({
           onFavoriteChange={() =>
             handleToggleFavorite(show, isFavorite(show.id))
           }
+          handleOpenModal={() => setSelectedSeries(show)}
         />
       ))}
+      {selectedSeries && (
+        <SeriesModal
+          series={selectedSeries}
+          closeModal={() => setSelectedSeries(null)}
+        />
+      )}
     </div>
   )
 }
