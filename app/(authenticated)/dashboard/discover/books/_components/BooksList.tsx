@@ -1,9 +1,10 @@
 "use client"
-import { useOptimistic, useTransition } from "react"
+import { useOptimistic, useState, useTransition } from "react"
 import { addFavorite, removeFavorite } from "@/app/actions/books/toggleFavorite"
 import toast from "react-hot-toast"
 import BooksCard from "./BooksCard"
 import { Book } from "@/types/book"
+import BooksModal from "./BooksModal"
 
 export default function BooksList({
   books,
@@ -12,6 +13,7 @@ export default function BooksList({
   books: Book[]
   favoriteIds: string[]
 }) {
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null)
   const [optimisticFavoriteIds, setOptimisticFavoriteIds] = useOptimistic(
     favoriteIds,
     (oldValues, newValue: string) => {
@@ -22,7 +24,6 @@ export default function BooksList({
   )
   const [isPending, startTransition] = useTransition()
 
-  console.log({ optimisticFavoriteIds, favoriteIds })
   const handleToggleFavorite = async (book: Book, alreadyAFavorite = false) => {
     startTransition(async () => {
       setOptimisticFavoriteIds(book.id)
@@ -52,8 +53,15 @@ export default function BooksList({
           onFavoriteChange={() =>
             handleToggleFavorite(book, isFavorite(book.id))
           }
+          handleOpenModal={() => setSelectedBook(book)}
         />
       ))}
+      {selectedBook && (
+        <BooksModal
+          book={selectedBook}
+          closeModal={() => setSelectedBook(null)}
+        />
+      )}
     </div>
   )
 }

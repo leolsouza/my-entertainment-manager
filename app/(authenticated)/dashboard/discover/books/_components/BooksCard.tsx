@@ -6,10 +6,12 @@ export default function BooksCard({
   book,
   isFavorite,
   onFavoriteChange,
+  handleOpenModal,
 }: {
   book: Book
   isFavorite: boolean
   onFavoriteChange: (book: Book, alreadyAFavorite?: boolean) => Promise<void>
+  handleOpenModal?: () => void
 }) {
   return (
     <FavoriteCard
@@ -17,6 +19,7 @@ export default function BooksCard({
       src={book.thumbnail}
       isFavorite={isFavorite}
       onFavoriteChange={() => onFavoriteChange(book)}
+      handleOpenModal={handleOpenModal}
     />
   )
 }
