@@ -9,12 +9,17 @@ import {
 } from "@/components/ui/select"
 import { resetPage } from "@/lib/utils"
 import { Genre } from "@/types/genre"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import React, { useState } from "react"
 
-export default function MoviesGenre({ genres }: { genres: Genre[] }) {
+type Props = {
+  genres: Genre[]
+}
+
+export default function MoviesGenreFilter({ genres }: Props) {
   const router = useRouter()
   const params = useSearchParams()
+  const pathname = usePathname()
   const [genre, setGenre] = useState(params.get("genre") || "")
 
   const onChange = (value: string) => {
@@ -23,7 +28,7 @@ export default function MoviesGenre({ genres }: { genres: Genre[] }) {
     if (value) newParams.set("genre", value)
     else newParams.delete("genre")
     resetPage(newParams)
-    router.push(`/dashboard/movies?${newParams.toString()}`)
+    router.push(`${pathname}?${newParams.toString()}`)
   }
 
   return (

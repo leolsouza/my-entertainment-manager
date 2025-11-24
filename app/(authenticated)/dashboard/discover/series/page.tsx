@@ -2,18 +2,18 @@ import { Suspense } from "react"
 import { Genre } from "@/types/genre"
 import { Loader2 } from "lucide-react"
 import { PaginationComponent } from "@/components/Pagination"
-import SeriesSearch from "./_components/SeriesSearch"
 import FilterByGenre from "@/components/FilterByGenre"
 import EmptyData from "@/components/EmptyData"
 import { fetchSeriesGenres } from "@/app/actions/genres/get"
 import { fetchSeries, getFavoriteSeriesIds } from "@/app/actions/series/get"
 import SeriesList from "./_components/SeriesList"
+import SearchFilter from "@/components/SearchFilter"
 
 type Props = {
   searchParams: Promise<{ query?: string; genre?: string; page?: string }>
 }
 
-export default async function SeriesPage({ searchParams }: Props) {
+export default async function DiscoverSeriesPage({ searchParams }: Props) {
   const params = await searchParams
   const query = params?.query || ""
   const genreId = params?.genre ? Number(params.genre) : undefined
@@ -24,10 +24,9 @@ export default async function SeriesPage({ searchParams }: Props) {
   const favoriteIds = await getFavoriteSeriesIds()
 
   return (
-    <main className="p-6">
-      <h1 className="mb-4 text-2xl font-bold">Series</h1>
+    <div>
       <div className="mb-4 flex flex-row items-center justify-between gap-2">
-        <SeriesSearch />
+        <SearchFilter placeholder="Search series..." />
         <FilterByGenre genres={genres} />
       </div>
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
@@ -40,6 +39,6 @@ export default async function SeriesPage({ searchParams }: Props) {
           <EmptyData />
         )}
       </Suspense>
-    </main>
+    </div>
   )
 }

@@ -3,12 +3,18 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { resetPage } from "@/lib/utils"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
-export default function BooksSearch() {
+type Props = {
+  placeholder: string
+}
+
+export default function SearchFilter({ placeholder }: Props) {
   const router = useRouter()
   const params = useSearchParams()
+  const pathname = usePathname()
+
   const [query, setQuery] = useState(params.get("query") || "")
 
   const handleSearch = () => {
@@ -16,7 +22,7 @@ export default function BooksSearch() {
     if (query) newParams.set("query", query)
     else newParams.delete("query")
     resetPage(newParams)
-    router.push(`/dashboard/books?${newParams.toString()}`)
+    router.push(`${pathname}?${newParams.toString()}`)
   }
 
   return (
@@ -24,7 +30,7 @@ export default function BooksSearch() {
       <Input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search books..."
+        placeholder={placeholder}
       />
       <Button onClick={handleSearch}>Search</Button>
     </div>

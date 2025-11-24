@@ -1,12 +1,10 @@
 import { Loader2 } from "lucide-react"
 import React, { Suspense } from "react"
-import BooksCard from "./_components/BooksCard"
 import EmptyData from "@/components/EmptyData"
 import { PaginationComponent } from "@/components/Pagination"
-import BooksSearch from "./_components/BooksSearch"
 import { fetchBooks, getFavoriteBookIds } from "@/app/actions/books/get"
 import BooksList from "./_components/BooksList"
-import { getFavoriteMovieIds } from "@/app/actions/movies/get"
+import SearchFilter from "@/components/SearchFilter"
 
 type Props = {
   searchParams: Promise<{
@@ -16,7 +14,7 @@ type Props = {
     page?: string
   }>
 }
-export default async function BooksPage({ searchParams }: Props) {
+export default async function DiscoverBooksPage({ searchParams }: Props) {
   const params = await searchParams
   const { query, page = "1" } = params
 
@@ -31,10 +29,9 @@ export default async function BooksPage({ searchParams }: Props) {
   const favoriteBookIds = await getFavoriteBookIds()
 
   return (
-    <main className="p-6">
-      <h1 className="mb-4 text-2xl font-bold">Books</h1>
+    <div>
       <div className="mb-4 flex flex-row items-center justify-between gap-2">
-        <BooksSearch />
+        <SearchFilter placeholder="Search books..." />
       </div>
       <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
         {books.results.length > 0 ? (
@@ -47,6 +44,6 @@ export default async function BooksPage({ searchParams }: Props) {
           <EmptyData />
         )}
       </Suspense>
-    </main>
+    </div>
   )
 }
