@@ -31,9 +31,9 @@ A **dedicated backend** will be built in the future to provide more control and 
 ## 🚀 Features (in progress)
 
 - [x] User authentication (via Supabase)
-- [ ] Ability to favorite movies, TV shows, and books
+- [x] Ability to favorite movies, TV shows, and books
+- [x] Content search using TMDB and Google Books APIs
 - [ ] Display of favorite items with categorization and insights
-- [ ] Content search using TMDB and Google Books APIs
 - [ ] Custom backend with REST/GraphQL API (planned)
 - [ ] Redesigned and improved UI (planned)
 
@@ -97,4 +97,4 @@ It’s also part of my professional developer portfolio.
 Developed by: Leonardo Lima
 
 - 🔗[LinkedIn](https://www.linkedin.com/in/leonardo-l-souza/)
-- 📧[eng.leolsouza@hotmail.com]
+- 📧[E-mail](mailto:eng.leolsouza@hotmail.com)
