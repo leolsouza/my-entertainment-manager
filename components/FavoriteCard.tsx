@@ -1,12 +1,7 @@
 "use client"
 
 import Image, { StaticImageData } from "next/image"
-import React, {
-  SyntheticEvent,
-  useOptimistic,
-  useState,
-  useTransition,
-} from "react"
+import React, { SyntheticEvent, useState } from "react"
 import { Card, CardContent, CardFooter } from "./ui/card"
 import {
   Tooltip,

@@ -1,6 +1,6 @@
 "use client"
 
-import { ActionResponse, initialState } from "@/app/actions/auth"
+import { ActionResponse, initialState } from "@/app/actions"
 import { signUp } from "@/app/actions/auth/signup"
 import FormInput from "@/components/FormInput"
 import PasswordInput from "@/components/PasswordInput"
@@ -63,7 +63,7 @@ export default function SignUpForm() {
         <Button type="submit" className="w-full" isLoading={isPending}>
           Sign up
         </Button>
-        <SubmitErrorMessage message={state.message} />
+        <SubmitErrorMessage message={state.message} error={!state.success} />
       </div>
     </form>
   )

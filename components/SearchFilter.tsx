@@ -32,7 +32,9 @@ export default function SearchFilter({ placeholder }: Props) {
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
       />
-      <Button onClick={handleSearch}>Search</Button>
+      <Button onClick={handleSearch} variant="outline">
+        Search
+      </Button>
     </div>
   )
 }

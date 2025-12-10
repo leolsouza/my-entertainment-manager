@@ -1,7 +1,7 @@
 "use server"
 
 import { api } from "@/lib/supabase-client"
-import { ActionResponse } from "../auth"
+import { ActionResponse } from ".."
 import { getAuthUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import { Book } from "@/types/book"

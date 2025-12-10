@@ -1,22 +1,24 @@
 "use server"
 
 import { api } from "@/lib/supabase-client"
-import { ActionResponse } from "../auth"
+import { ActionResponse } from ".."
 import { Movie } from "@/types/movie"
 import { getAuthUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
 export async function addFavorite(movie: Movie): Promise<ActionResponse> {
-  const { id, poster_path, release_date, title } = movie
+  const { id, poster_path, release_date, title, genre_ids, overview } = movie
   const authUser = await getAuthUser()
   try {
     await api.from("movies").insert([
       {
         tmdb_id: id,
         title,
+        overview,
         poster_path,
         release_date: new Date(release_date),
         user_id: authUser?.id,
+        genre_ids,
       },
     ])
 

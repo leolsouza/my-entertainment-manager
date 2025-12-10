@@ -2,7 +2,7 @@
 
 import { authApi } from "@/lib/supabase-client"
 import SignInSchema from "./schema"
-import { ActionResponse } from ".."
+import { ActionResponse } from "../.."
 import { storeAuthUser, storeSession } from "@/lib/auth"
 import z from "zod"
 
