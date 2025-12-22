@@ -67,3 +67,28 @@ export async function handleFavoriteMovie(
     message: "Movie added successfully",
   }
 }
+
+export async function deleteFavoriteMovie(id: number): Promise<ActionResponse> {
+  const authUser = await getAuthUser()
+
+  const result = await api
+    .from("movies")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", authUser?.id)
+
+  revalidatePath("/dashboard/favorites/movies")
+
+  if (result.error) {
+    return {
+      success: false,
+      message: "An error occurred while deleting the movie",
+      error: "Failed to remove movie",
+    }
+  }
+
+  return {
+    success: true,
+    message: "Movie removed successfully",
+  }
+}

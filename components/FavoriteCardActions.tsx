@@ -1,12 +1,11 @@
 "use client"
 
 import Image, { StaticImageData } from "next/image"
-import React, { SyntheticEvent, useState } from "react"
+import React, { useState } from "react"
 import { Card, CardContent, CardFooter } from "./ui/card"
 import { Button } from "./ui/button"
 import { Eye, MoreVertical, Pencil, Trash } from "lucide-react"
 import NoPosterAvailable from "@/assets/no-poster-available.jpg"
-import { cn } from "@/lib/utils"
 
 import {
   DropdownMenu,
@@ -39,10 +38,7 @@ export default function FavoriteCardActions({
   const safeTitle = title ?? "No available"
 
   return (
-    <Card
-      className="shaflex-col relative flex h-full gap-1 overflow-hidden pt-0 pb-3"
-      onClick={handleOpenModal}
-    >
+    <Card className="relative flex h-full flex-col gap-1 overflow-hidden pt-0 pb-3 shadow">
       <CardContent className="relative aspect-[2/3] w-full p-0">
         <Image
           src={imgSrc}

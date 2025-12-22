@@ -39,9 +39,15 @@ export async function addFavorite(movie: Movie): Promise<ActionResponse> {
 }
 
 export async function removeFavorite(movie: Movie): Promise<ActionResponse> {
+  const authUser = await getAuthUser()
   const { id, title } = movie
   try {
-    await api.from("movies").delete().eq("tmdb_id", id)
+    await api
+      .from("movies")
+      .delete()
+      .eq("tmdb_id", id)
+      .eq("user_id", authUser?.id)
+
     return {
       success: true,
       message: `${title} was remove from favorite`,

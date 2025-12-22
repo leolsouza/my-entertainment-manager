@@ -25,7 +25,7 @@ export default function MoviesList({
       return [...oldValues, newValue]
     }
   )
-  const [isPending, startTransition] = useTransition()
+  const [_, startTransition] = useTransition()
 
   const handleToggleFavorite = async (
     movie: Movie,
