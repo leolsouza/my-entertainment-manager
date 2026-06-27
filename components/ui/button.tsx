@@ -62,8 +62,12 @@ function Button({
       disabled={isLoading || props.disabled}
       {...props}
     >
-      {isLoading && <Loader2 className="size-4 animate-spin" />}
-      {children}
+      {asChild ? children : (
+        <>
+          {isLoading && <Loader2 className="size-4 animate-spin" />}
+          {children}
+        </>
+      )}
     </Comp>
   )
 }
