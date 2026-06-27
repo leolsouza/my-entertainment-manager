@@ -1,6 +1,8 @@
 "use server"
 
-import { api } from "@/lib/supabase-client"
+import { db } from "@/lib/db"
+import { movies } from "@/lib/db/schema"
+import { and, eq } from "drizzle-orm"
 import handleMovieSchema from "./schema"
 import z from "zod"
 import { ActionResponse } from "../.."
@@ -11,6 +13,10 @@ export async function handleFavoriteMovie(
   formData: FormData
 ): Promise<ActionResponse> {
   const authUser = await getAuthUser()
+
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
 
   const id = formData.get("id") as string | undefined
   const title = formData.get("title") as string
@@ -30,62 +36,40 @@ export async function handleFavoriteMovie(
     }
   }
 
-  let result = null
-
   if (id) {
-    result = await api
-      .from("movies")
-      .update({
-        title,
-        release_date: release_date ?? undefined,
-        overview,
-        user_id: authUser?.id,
-      })
-      .eq("id", id)
-      .eq("user_id", authUser?.id)
+    await db
+      .update(movies)
+      .set({ title, releaseDate: release_date, overview })
+      .where(and(eq(movies.id, Number(id)), eq(movies.userId, authUser.id)))
   } else {
-    result = await api.from("movies").insert({
+    await db.insert(movies).values({
       title,
-      release_date: release_date ?? undefined,
+      releaseDate: release_date,
       overview,
-      user_id: authUser?.id,
+      userId: authUser.id,
     })
   }
 
   revalidatePath("/dashboard/favorites/movies")
 
-  if (result === null || result.error) {
-    return {
-      success: false,
-      message: "An error occurred while adding the movie",
-      error: "Failed to add movie",
-    }
-  }
-
   return {
     success: true,
-    message: "Movie added successfully",
+    message: "Movie saved successfully",
   }
 }
 
 export async function deleteFavoriteMovie(id: number): Promise<ActionResponse> {
   const authUser = await getAuthUser()
 
-  const result = await api
-    .from("movies")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", authUser?.id)
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
+  await db
+    .delete(movies)
+    .where(and(eq(movies.id, id), eq(movies.userId, authUser.id)))
 
   revalidatePath("/dashboard/favorites/movies")
-
-  if (result.error) {
-    return {
-      success: false,
-      message: "An error occurred while deleting the movie",
-      error: "Failed to remove movie",
-    }
-  }
 
   return {
     success: true,
