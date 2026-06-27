@@ -1,10 +1,13 @@
 "use server"
 
-import { authApi } from "@/lib/supabase-client"
-import { ActionResponse } from "../.."
-import { storeAuthUser, storeSession } from "@/lib/auth"
-import z from "zod"
+import { db } from "@/lib/db"
+import { users } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
+import { hash } from "bcryptjs"
+import { generateToken, storeSession } from "@/lib/auth"
 import SignUpSchema from "./schema"
+import { ActionResponse } from "../.."
+import z from "zod"
 
 export async function signUp(formData: FormData): Promise<ActionResponse> {
   try {
@@ -25,21 +28,27 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
       }
     }
 
-    const { data } = await authApi.signUp({
-      email,
-      password,
-    })
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
 
-    if (data.session === null || data.user === null) {
+    if (existingUser) {
       return {
         success: false,
-        message: "Invalid email or password",
-        error: "No session returned",
+        message: "Email already in use",
+        error: "Email already in use",
       }
     }
 
-    await storeSession(data.session)
-    await storeAuthUser(data.user)
+    const hashedPassword = await hash(password, 12)
+    const [newUser] = await db
+      .insert(users)
+      .values({ email, password: hashedPassword })
+      .returning()
+
+    const token = await generateToken({ id: newUser.id, email: newUser.email })
+    await storeSession(token)
 
     return {
       success: true,

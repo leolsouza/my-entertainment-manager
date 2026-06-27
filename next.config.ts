@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     domains: ["image.tmdb.org", "books.google.com"],
-  }
-  /* config options here */
+  },
+  serverExternalPackages: ["better-sqlite3"],
 };
 
 export default nextConfig;

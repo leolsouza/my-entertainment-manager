@@ -1,9 +1,12 @@
 "use server"
 
-import { authApi } from "@/lib/supabase-client"
+import { db } from "@/lib/db"
+import { users } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
+import { compare } from "bcryptjs"
+import { generateToken, storeSession } from "@/lib/auth"
 import SignInSchema from "./schema"
 import { ActionResponse } from "../.."
-import { storeAuthUser, storeSession } from "@/lib/auth"
 import z from "zod"
 
 export async function signIn(formData: FormData): Promise<ActionResponse> {
@@ -20,21 +23,27 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
       }
     }
 
-    const { data } = await authApi.signInWithPassword({
-      email,
-      password,
-    })
+    const [user] = await db.select().from(users).where(eq(users.email, email))
 
-    if (data.session === null || data.user === null) {
+    if (!user) {
       return {
         success: false,
         message: "Invalid email or password",
-        error: "No session returned",
+        error: "User not found",
       }
     }
 
-    await storeSession(data.session)
-    await storeAuthUser(data.user)
+    const passwordMatch = await compare(password, user.password)
+    if (!passwordMatch) {
+      return {
+        success: false,
+        message: "Invalid email or password",
+        error: "Wrong password",
+      }
+    }
+
+    const token = await generateToken({ id: user.id, email: user.email })
+    await storeSession(token)
 
     return {
       success: true,
