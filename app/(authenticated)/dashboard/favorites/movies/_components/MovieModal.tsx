@@ -1,5 +1,3 @@
-import ReadingInput from "@/components/ReadingInput"
-import ReadingTextarea from "@/components/ReadingTextarea"
 import {
   Dialog,
   DialogContent,
