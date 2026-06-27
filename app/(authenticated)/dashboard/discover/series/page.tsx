@@ -23,6 +23,8 @@ export default async function DiscoverSeriesPage({ searchParams }: Props) {
   const genres: Genre[] = await fetchSeriesGenres()
   const favoriteIds = await getFavoriteSeriesIds()
 
+  console.log({ series })
+
   return (
     <div>
       <div className="mb-4 flex flex-row items-center justify-between gap-2">
