@@ -1,6 +1,8 @@
 "use server"
 
-import { api } from "@/lib/supabase-client"
+import { db } from "@/lib/db"
+import { series } from "@/lib/db/schema"
+import { and, eq } from "drizzle-orm"
 import handleSeriesSchema from "./schema"
 import z from "zod"
 import { ActionResponse } from "../.."
@@ -12,17 +14,19 @@ export async function handleFavoriteSeries(
 ): Promise<ActionResponse> {
   const authUser = await getAuthUser()
 
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
   const id = formData.get("id") as string | undefined
   const name = formData.get("name") as string
   const first_air_date = (formData.get("first_air_date") as string) ?? undefined
-  const poster_path = formData.get("poster_path") as string
-  const overview = formData.get("overview") as string
+  const poster_path = (formData.get("poster_url") as string) ?? undefined
 
   const validationResult = handleSeriesSchema.safeParse({
     name,
     first_air_date,
     poster_path,
-    overview,
   })
   if (!validationResult.success) {
     return {
@@ -32,67 +36,43 @@ export async function handleFavoriteSeries(
     }
   }
 
-  let result = null
-
   if (id) {
-    result = await api
-      .from("series")
-      .update({
-        name,
-        first_air_date: first_air_date ?? undefined,
-        poster_path,
-        user_id: authUser?.id,
-      })
-      .eq("id", id)
-      .eq("user_id", authUser?.id)
+    await db
+      .update(series)
+      .set({ name, firstAirDate: first_air_date, posterPath: poster_path })
+      .where(and(eq(series.id, Number(id)), eq(series.userId, authUser.id)))
   } else {
-    result = await api.from("series").insert({
+    await db.insert(series).values({
       name,
-      first_air_date: first_air_date ?? undefined,
-      poster_path,
-      user_id: authUser?.id,
+      firstAirDate: first_air_date,
+      posterPath: poster_path,
+      userId: authUser.id,
     })
   }
 
   revalidatePath("/dashboard/favorites/series")
 
-  if (result === null || result.error) {
-    return {
-      success: false,
-      message: "An error occurred while adding the series",
-      error: "Failed to add series",
-    }
-  }
-
   return {
     success: true,
-    message: "Movie added successfully",
+    message: "Series saved successfully",
   }
 }
 
-export async function deleteFavoriteSeries(
-  id: number
-): Promise<ActionResponse> {
+export async function deleteFavoriteSeries(id: number): Promise<ActionResponse> {
   const authUser = await getAuthUser()
 
-  const result = await api
-    .from("series")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", authUser?.id)
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
+  await db
+    .delete(series)
+    .where(and(eq(series.id, id), eq(series.userId, authUser.id)))
 
   revalidatePath("/dashboard/favorites/series")
 
-  if (result.error) {
-    return {
-      success: false,
-      message: "An error occurred while deleting the series",
-      error: "Failed to remove series",
-    }
-  }
-
   return {
     success: true,
-    message: "Movie removed successfully",
+    message: "Series removed successfully",
   }
 }

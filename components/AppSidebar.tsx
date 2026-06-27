@@ -15,7 +15,7 @@ import {
 import Logo from "@/assets/logo.png"
 import Link from "next/link"
 import Image from "next/image"
-import { User } from "@supabase/supabase-js"
+import { AuthUser } from "@/types/auth"
 
 const discoverRoutes = [
   {
@@ -54,7 +54,7 @@ const favoriteRoutes = [
 ]
 
 type AppSidebarProps = {
-  authUser: User
+  authUser: AuthUser
 }
 
 export default function AppSidebar({ authUser }: AppSidebarProps) {

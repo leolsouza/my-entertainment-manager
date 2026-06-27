@@ -1,7 +1,24 @@
 "use server"
-import { api } from "@/lib/supabase-client"
+
+import { db } from "@/lib/db"
+import { movies } from "@/lib/db/schema"
+import { and, count, eq, like, sql } from "drizzle-orm"
 import tmdb from "@/lib/tmdb-instance"
 import { Movie } from "@/types/movie"
+import { getAuthUser } from "@/lib/auth"
+
+function toMovie(record: typeof movies.$inferSelect): Movie {
+  return {
+    id: record.id,
+    title: record.title,
+    original_title: record.title,
+    poster_path: record.posterPath ?? undefined,
+    release_date: record.releaseDate ?? "",
+    overview: record.overview,
+    genre_ids: record.genreIds ?? [],
+    tmdb_id: record.tmdbId ?? undefined,
+  }
+}
 
 export async function fetchAllMovies({
   query,
@@ -26,15 +43,15 @@ export async function fetchAllMovies({
   }
 
   const { data } = await tmdb.get(endpoint, { params })
-  let movies: Movie[] = data.results
+  let movieResults: Movie[] = data.results
 
   if (query && genreId) {
-    movies = movies.filter((m: Movie) => m.genre_ids.includes(genreId))
+    movieResults = movieResults.filter((m: Movie) =>
+      m.genre_ids.includes(genreId)
+    )
   }
 
-  return {
-    ...data,
-  }
+  return { ...data }
 }
 
 export async function fetchFavoriteMovies({
@@ -47,39 +64,57 @@ export async function fetchFavoriteMovies({
   page?: number
 }): Promise<GetQuery<Movie>> {
   const PAGE_SIZE = 15
+  const authUser = await getAuthUser()
 
-  const start = (page - 1) * PAGE_SIZE
-  const end = start + PAGE_SIZE - 1
+  if (!authUser)
+    return { results: [], page, total_pages: 0, total_results: 0 }
 
-  let query = api.from("movies").select("*", { count: "exact" })
+  const offset = (page - 1) * PAGE_SIZE
+
+  const conditions = [eq(movies.userId, authUser.id)]
 
   if (title && title.trim() !== "") {
-    query = query.ilike("title", `%${title}%`)
+    conditions.push(like(movies.title, `%${title}%`))
   }
 
   if (genreId) {
-    query = query.contains("genre_ids", [genreId])
+    conditions.push(
+      sql`EXISTS (SELECT 1 FROM json_each(${movies.genreIds}) WHERE value = ${genreId})`
+    )
   }
 
-  const { data, count, error } = await query.range(start, end)
+  const where = and(...conditions)
 
-  if (error) throw error
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(movies)
+    .where(where)
 
-  const total_pages = Math.ceil((count ?? 0) / PAGE_SIZE)
+  const results = await db
+    .select()
+    .from(movies)
+    .where(where)
+    .limit(PAGE_SIZE)
+    .offset(offset)
 
   return {
-    results: data,
+    results: results.map(toMovie),
     page,
-    total_pages,
-    total_results: count ?? 0,
+    total_pages: Math.ceil(total / PAGE_SIZE),
+    total_results: total,
   }
 }
 
 export async function getFavoriteMovieIds(): Promise<number[]> {
-  const { data, error } = await api.from("movies").select("tmdb_id")
-  if (error) {
-    console.error("Error getting favorite movies:", error)
-    return []
-  }
-  return data?.map((movie) => movie.tmdb_id) ?? []
+  const authUser = await getAuthUser()
+  if (!authUser) return []
+
+  const result = await db
+    .select({ tmdbId: movies.tmdbId })
+    .from(movies)
+    .where(eq(movies.userId, authUser.id))
+
+  return result
+    .map((m) => m.tmdbId)
+    .filter((id): id is number => id !== null)
 }

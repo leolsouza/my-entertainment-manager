@@ -1,66 +1,58 @@
-import { Session, User } from "@supabase/supabase-js"
 import { cookies } from "next/headers"
-import { unixTimestampToDate } from "./utils"
+import { SignJWT, jwtVerify } from "jose"
+import type { AuthUser } from "@/types/auth"
 
-const DEFAULT_EXPIRATION_AUTHENTICATION = 60 * 60 * 1000
-const defaultExpirationDate = new Date(
-  Date.now() + DEFAULT_EXPIRATION_AUTHENTICATION
-)
-const AUTH_USER_KEY = "auth_user"
 const AUTH_TOKEN_KEY = "auth_token"
+const SESSION_EXPIRATION_SECONDS = 60 * 60 * 24 // 24 hours
+
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error("Missing JWT_SECRET environment variable")
+  return new TextEncoder().encode(secret)
+}
+
+export async function generateToken(user: AuthUser): Promise<string> {
+  return new SignJWT({ id: user.id, email: user.email })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("24h")
+    .sign(getJwtSecret())
+}
+
+export async function verifyToken(token: string): Promise<AuthUser | null> {
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret())
+    return { id: payload.id as number, email: payload.email as string }
+  } catch {
+    return null
+  }
+}
+
+export async function storeSession(token: string) {
+  try {
+    const cookieStore = await cookies()
+    cookieStore.set({
+      name: AUTH_TOKEN_KEY,
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "lax",
+      maxAge: SESSION_EXPIRATION_SECONDS,
+    })
+    return true
+  } catch (error) {
+    console.error("Error storing session:", error)
+    return false
+  }
+}
 
 export async function clearSession() {
   try {
     const cookieStore = await cookies()
     cookieStore.delete(AUTH_TOKEN_KEY)
-    cookieStore.delete(AUTH_USER_KEY)
     return true
   } catch (error) {
     console.error("Error clearing session:", error)
-    return false
-  }
-}
-
-export async function storeSession(session: Session) {
-  const expirationDate = session.expires_at
-    ? unixTimestampToDate(session.expires_at)
-    : defaultExpirationDate
-  try {
-    const cookieStore = await cookies()
-    cookieStore.set({
-      name: AUTH_TOKEN_KEY,
-      value: session.access_token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      sameSite: "lax",
-      expires: expirationDate,
-    })
-    return true
-  } catch (error) {
-    await clearSession()
-    console.error("Error creating session:", error)
-    return false
-  }
-}
-
-export async function storeAuthUser(user: User) {
-  try {
-    const cookieStore = await cookies()
-    cookieStore.set({
-      name: AUTH_USER_KEY,
-      value: JSON.stringify(user),
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      sameSite: "lax",
-      expires: defaultExpirationDate,
-    })
-
-    return true
-  } catch (error) {
-    await clearSession()
-    console.error("Error creating session:", error)
     return false
   }
 }
@@ -70,8 +62,9 @@ export async function getSession() {
   return cookieStore.get(AUTH_TOKEN_KEY)?.value
 }
 
-export async function getAuthUser(): Promise<User | undefined> {
-  const cookieStore = await cookies()
-  const string = cookieStore.get(AUTH_USER_KEY)?.value
-  if (string) return JSON.parse(string)
+export async function getAuthUser(): Promise<AuthUser | undefined> {
+  const token = await getSession()
+  if (!token) return undefined
+  const user = await verifyToken(token)
+  return user ?? undefined
 }
