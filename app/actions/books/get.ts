@@ -1,6 +1,9 @@
+import { db } from "@/lib/db"
+import { books } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
 import googleBooks from "@/lib/google-books-instance"
-import { api } from "@/lib/supabase-client"
 import { Book } from "@/types/book"
+import { getAuthUser } from "@/lib/auth"
 
 export async function fetchBooks({
   query,
@@ -41,10 +44,15 @@ export async function fetchBooks({
 }
 
 export async function getFavoriteBookIds(): Promise<string[]> {
-  const { data, error } = await api.from("books").select("google_books_id")
-  if (error) {
-    console.error("Error getting favorite books:", error)
-    return []
-  }
-  return data?.map((book) => book.google_books_id) ?? []
+  const authUser = await getAuthUser()
+  if (!authUser) return []
+
+  const result = await db
+    .select({ googleBooksId: books.googleBooksId })
+    .from(books)
+    .where(eq(books.userId, authUser.id))
+
+  return result
+    .map((b) => b.googleBooksId)
+    .filter((id): id is string => id !== null)
 }

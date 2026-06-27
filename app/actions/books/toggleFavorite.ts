@@ -1,6 +1,8 @@
 "use server"
 
-import { api } from "@/lib/supabase-client"
+import { db } from "@/lib/db"
+import { books } from "@/lib/db/schema"
+import { and, eq } from "drizzle-orm"
 import { ActionResponse } from ".."
 import { getAuthUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
@@ -10,47 +12,54 @@ export async function addFavorite(book: Book): Promise<ActionResponse> {
   const { id, title, thumbnail, publishedDate, authors } = book
   const authUser = await getAuthUser()
 
-  const { error } = await api.from("books").insert([
-    {
-      google_books_id: id,
-      title,
-      authors,
-      poster_path: thumbnail,
-      release_date: publishedDate ? new Date(publishedDate) : undefined,
-      user_id: authUser?.id,
-    },
-  ])
-
-  revalidatePath("/dashboard/discover/books")
-
-  if (error) {
-    console.log(`Error in add ${title} to favorites`, error)
-    return {
-      success: false,
-      message: `It wasn't possible add ${title} to favorites`,
-      error: error.message,
-    }
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
   }
 
-  return {
-    success: true,
-    message: `${title} was add to favorite`,
+  try {
+    await db.insert(books).values({
+      googleBooksId: id,
+      title,
+      authors,
+      posterPath: thumbnail,
+      releaseDate: publishedDate,
+      userId: authUser.id,
+    })
+
+    revalidatePath("/dashboard/discover/books")
+
+    return { success: true, message: `${title} was added to favorites` }
+  } catch (error) {
+    console.error(`Error adding ${title} to favorites`, error)
+    return {
+      success: false,
+      message: `It wasn't possible to add ${title} to favorites`,
+      error: error as string,
+    }
   }
 }
 
 export async function removeFavorite(book: Book): Promise<ActionResponse> {
   const { id, title } = book
+  const authUser = await getAuthUser()
+
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
   try {
-    await api.from("books").delete().eq("google_books_id", id)
-    return {
-      success: true,
-      message: `${title} was remove from favorite`,
-    }
+    await db
+      .delete(books)
+      .where(and(eq(books.googleBooksId, id), eq(books.userId, authUser.id)))
+
+    revalidatePath("/dashboard/discover/books")
+
+    return { success: true, message: `${title} was removed from favorites` }
   } catch (error) {
-    console.log(`Error in remove ${title} from favorites`, error)
+    console.error(`Error removing ${title} from favorites`, error)
     return {
       success: false,
-      message: `It wasn't possible remove ${title} from favorites`,
+      message: `It wasn't possible to remove ${title} from favorites`,
       error: error as string,
     }
   }
