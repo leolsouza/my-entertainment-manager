@@ -1,53 +1,63 @@
 "use server"
 
-import { api } from "@/lib/supabase-client"
+import { db } from "@/lib/db"
+import { series } from "@/lib/db/schema"
+import { and, eq } from "drizzle-orm"
 import { ActionResponse } from ".."
+import { Series } from "@/types/series"
 import { getAuthUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
-import { Series } from "@/types/series"
 
-export async function addFavorite(series: Series): Promise<ActionResponse> {
-  const { id, poster_path, name } = series
+export async function addFavorite(show: Series): Promise<ActionResponse> {
+  const { id, poster_path, name } = show
   const authUser = await getAuthUser()
+
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
   try {
-    await api.from("series").insert([
-      {
-        tmdb_id: id,
-        title: name,
-        poster_path,
-        user_id: authUser?.id,
-      },
-    ])
+    await db.insert(series).values({
+      tmdbId: id,
+      name,
+      posterPath: poster_path,
+      userId: authUser.id,
+    })
 
     revalidatePath("/dashboard/discover/series")
 
-    return {
-      success: true,
-      message: `${name} was add to favorite`,
-    }
+    return { success: true, message: `${name} was added to favorites` }
   } catch (error) {
-    console.log(`Error in add ${name} to favorites`, error)
+    console.error(`Error adding ${name} to favorites`, error)
     return {
       success: false,
-      message: `It wasn't possible add ${name} to favorites`,
+      message: `It wasn't possible to add ${name} to favorites`,
       error: error as string,
     }
   }
 }
 
-export async function removeFavorite(series: Series): Promise<ActionResponse> {
-  const { id, name } = series
+export async function removeFavorite(show: Series): Promise<ActionResponse> {
+  const { id, name } = show
+  const authUser = await getAuthUser()
+
+  if (!authUser) {
+    return { success: false, message: "Unauthorized", error: "Unauthorized" }
+  }
+
   try {
-    await api.from("series").delete().eq("tmdb_id", id)
-    return {
-      success: true,
-      message: `${name} was remove from favorite`,
-    }
+    await db
+      .delete(series)
+      .where(and(eq(series.tmdbId, id), eq(series.userId, authUser.id)))
+
+    revalidatePath("/dashboard/discover/series")
+
+    return { success: true, message: `${name} was removed from favorites` }
   } catch (error) {
-    console.log(`Error in remove ${name} from favorites`, error)
+    console.error(`Error removing ${name} from favorites`, error)
     return {
       success: false,
-      message: `It wasn't possible remove ${name} from favorites`,
+      message: `It wasn't possible to remove ${name} from favorites`,
       error: error as string,
     }
   }
