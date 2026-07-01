@@ -1,8 +1,8 @@
 import { db } from "@/lib/db"
 import { books } from "@/lib/db/schema"
-import { eq } from "drizzle-orm"
+import { and, count, eq, like } from "drizzle-orm"
 import googleBooks from "@/lib/google-books-instance"
-import { Book } from "@/types/book"
+import { Book, FavoriteBook } from "@/types/book"
 import { getAuthUser } from "@/lib/auth"
 
 export async function fetchBooks({
@@ -40,6 +40,56 @@ export async function fetchBooks({
     page: currentPage,
     total_pages: totalPages,
     total_results: totalItems,
+  }
+}
+
+export async function fetchFavoriteBooks({
+  title,
+  page = 1,
+}: {
+  title?: string
+  page?: number
+}): Promise<GetQuery<FavoriteBook>> {
+  const PAGE_SIZE = 15
+  const authUser = await getAuthUser()
+
+  if (!authUser)
+    return { results: [], page, total_pages: 0, total_results: 0 }
+
+  const offset = (page - 1) * PAGE_SIZE
+
+  const conditions = [eq(books.userId, authUser.id)]
+
+  if (title && title.trim() !== "") {
+    conditions.push(like(books.title, `%${title}%`))
+  }
+
+  const where = and(...conditions)
+
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(books)
+    .where(where)
+
+  const results = await db
+    .select()
+    .from(books)
+    .where(where)
+    .limit(PAGE_SIZE)
+    .offset(offset)
+
+  return {
+    results: results.map((b) => ({
+      id: b.id,
+      googleBooksId: b.googleBooksId ?? undefined,
+      title: b.title,
+      authors: b.authors ?? undefined,
+      thumbnail: b.posterPath ?? undefined,
+      publishedDate: b.releaseDate ?? undefined,
+    })),
+    page,
+    total_pages: Math.ceil(total / PAGE_SIZE),
+    total_results: total,
   }
 }
 

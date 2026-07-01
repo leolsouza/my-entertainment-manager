@@ -22,7 +22,7 @@ export default function BooksList({
       return [...oldValues, newValue]
     }
   )
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   const handleToggleFavorite = async (book: Book, alreadyAFavorite = false) => {
     startTransition(async () => {
