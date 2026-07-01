@@ -9,7 +9,7 @@ import { getAuthUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
 export async function addFavorite(show: Series): Promise<ActionResponse> {
-  const { id, poster_path, name } = show
+  const { id, poster_path, name, first_air_date } = show
   const authUser = await getAuthUser()
 
   if (!authUser) {
@@ -21,6 +21,7 @@ export async function addFavorite(show: Series): Promise<ActionResponse> {
       tmdbId: id,
       name,
       posterPath: poster_path,
+      firstAirDate: first_air_date,
       userId: authUser.id,
     })
 
