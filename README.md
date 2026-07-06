@@ -49,9 +49,12 @@ It's built with **Next.js (TypeScript)** and focuses heavily on **Server Compone
 - [x] Dedicated favorites page with search and filter (planned)
 - [x] Manually add, edit and delete custom book entries (planned)
 
+### Dashboard
+- [x] Overview page with charts and stats for movies, series, and books (favorite totals, recent activity, genre/author/decade breakdowns, recently added items)
+
 ### General
-- [ ] Redesigned and improved UI (planned)
-- [ ] Deployment with Neon (PostgreSQL) + Vercel (planned)
+- [ ] Improved UI (planned)
+- [ ] User profile screen (planned)
 
 ---
 
