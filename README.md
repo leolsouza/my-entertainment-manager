@@ -1,15 +1,15 @@
 # 🎬 My Entertainment Manager
 
-**My Entertainment Manager** is a personal portfolio project that allows users to manage their favorite **movies**, **TV shows**, and **books** — all in one place.  
+**My Entertainment Manager** is a personal portfolio project that allows users to manage their favorite **movies**, **TV shows**, and **books** — all in one place.
 It's built with **Next.js (TypeScript)** and focuses heavily on **Server Components**, **Server Actions**, and **server-side rendering** to ensure performance and a great developer experience.
 
 ---
 
 ## 🚧 Project Status
 
-> **⚙️ Work in Progress**  
-> The project is still in development and not yet finalized.  
-> All features, design, and architecture are subject to change.  
+> **⚙️ Work in Progress**
+> The project is still in development and not yet finalized.
+> All features, design, and architecture are subject to change.
 > The current **UI design and styling are prototypes** — they serve as a foundation for functionality testing and will be redesigned in later stages for a more polished look and better user experience.
 
 ---
@@ -46,8 +46,8 @@ It's built with **Next.js (TypeScript)** and focuses heavily on **Server Compone
 ### Books
 - [x] Discover books and search by title (Google Books)
 - [x] Add and remove books from favorites directly from the discover page
-- [ ] Dedicated favorites page with search and filter (planned)
-- [ ] Manually add, edit and delete custom book entries (planned)
+- [x] Dedicated favorites page with search and filter (planned)
+- [x] Manually add, edit and delete custom book entries (planned)
 
 ### General
 - [ ] Redesigned and improved UI (planned)
@@ -107,7 +107,7 @@ Before running the project locally, make sure you have:
 
 ### 💡 Project Purpose
 
-This project was created to enhance my skills in Next.js 15, server-side rendering, full-stack architecture, and API integration, while showcasing my ability to build modern applications without relying on third-party BaaS solutions.  
+This project was created to enhance my skills in Next.js 15, server-side rendering, full-stack architecture, and API integration, while showcasing my ability to build modern applications without relying on third-party BaaS solutions.
 It's also part of my professional developer portfolio.
 
 ### 📬 Contact
