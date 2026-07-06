@@ -1,4 +1,4 @@
-import { User2, EthernetPort, Book, Video } from "lucide-react"
+import { User2, EthernetPort, Book, Video, LayoutDashboard } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -69,6 +69,20 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarSeparator style={{ width: "auto" }} />
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard">
+                    <LayoutDashboard />
+                    <span>Overview</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Favorites</SidebarGroupLabel>
           <SidebarGroupContent>
