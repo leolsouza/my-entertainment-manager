@@ -125,7 +125,7 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
           <SidebarMenuItem>
             <div className="flex w-full items-center justify-start gap-1 px-2 text-sm">
               <User2 className="size-4" />
-              {authUser?.email}
+              {authUser?.name}
             </div>
           </SidebarMenuItem>
           <SidebarMenuItem className="mt-2">

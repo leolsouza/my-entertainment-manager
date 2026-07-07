@@ -12,7 +12,7 @@ function getJwtSecret() {
 }
 
 export async function generateToken(user: AuthUser): Promise<string> {
-  return new SignJWT({ id: user.id, email: user.email })
+  return new SignJWT({ id: user.id, email: user.email, name: user.name })
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("24h")
     .sign(getJwtSecret())
@@ -21,7 +21,11 @@ export async function generateToken(user: AuthUser): Promise<string> {
 export async function verifyToken(token: string): Promise<AuthUser | null> {
   try {
     const { payload } = await jwtVerify(token, getJwtSecret())
-    return { id: payload.id as number, email: payload.email as string }
+    return {
+      id: payload.id as number,
+      email: payload.email as string,
+      name: payload.name as string,
+    }
   } catch {
     return null
   }

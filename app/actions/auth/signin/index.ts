@@ -42,7 +42,11 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
       }
     }
 
-    const token = await generateToken({ id: user.id, email: user.email })
+    const token = await generateToken({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    })
     await storeSession(token)
 
     return {
