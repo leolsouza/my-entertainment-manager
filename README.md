@@ -51,6 +51,7 @@ It's built with **Next.js (TypeScript)** and focuses heavily on **Server Compone
 
 ### Dashboard
 - [x] Overview page with charts and stats for movies, series, and books (favorite totals, recent activity, genre/author/decade breakdowns, recently added items)
+- [x] Settings page to user change your name and password
 
 ### General
 - [ ] Improved UI (planned)
