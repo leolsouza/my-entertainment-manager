@@ -11,11 +11,13 @@ import z from "zod"
 
 export async function signUp(formData: FormData): Promise<ActionResponse> {
   try {
+    const name = formData.get("name") as string
     const email = formData.get("email") as string
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirmPassword") as string
 
     const validationResult = SignUpSchema.safeParse({
+      name,
       email,
       password,
       confirmPassword,
@@ -44,10 +46,14 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
     const hashedPassword = await hash(password, 12)
     const [newUser] = await db
       .insert(users)
-      .values({ email, password: hashedPassword })
+      .values({ name, email, password: hashedPassword })
       .returning()
 
-    const token = await generateToken({ id: newUser.id, email: newUser.email })
+    const token = await generateToken({
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+    })
     await storeSession(token)
 
     return {

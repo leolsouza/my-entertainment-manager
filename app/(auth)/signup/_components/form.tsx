@@ -38,6 +38,14 @@ export default function SignUpForm() {
   return (
     <form className="space-y-6" action={formAction}>
       <FormInput
+        label="Name"
+        type="text"
+        value="name"
+        placeholder="Enter your name"
+        disabled={isPending}
+        error={state.errors?.name?.[0]}
+      />
+      <FormInput
         label="Email"
         type="email"
         value="email"
