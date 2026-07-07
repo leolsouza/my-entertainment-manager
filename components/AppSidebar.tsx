@@ -123,10 +123,12 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex w-full items-center justify-start gap-1 px-2 text-sm">
-              <User2 className="size-4" />
-              {authUser?.name}
-            </div>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/settings">
+                <User2 className="size-4" />
+                <span>{authUser?.name}</span>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem className="mt-2">
             <SidebarMenuButton asChild>
