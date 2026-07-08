@@ -51,7 +51,7 @@ export default function FormSeries({
         label="Title"
         value="name"
         placeholder="Enter the series name"
-        defaultValue={series?.name}
+        defaultValue={state.values?.name ?? series?.name}
         error={state.errors?.name?.[0]}
         readonly={isReadyOnly}
       />
@@ -61,7 +61,7 @@ export default function FormSeries({
         type="date"
         required={false}
         placeholder="Enter the first air date"
-        defaultValue={series?.first_air_date}
+        defaultValue={state.values?.first_air_date ?? series?.first_air_date}
         error={state.errors?.first_air_date?.[0]}
         readonly={isReadyOnly}
       />
@@ -70,7 +70,7 @@ export default function FormSeries({
         value="poster_url"
         type="url"
         placeholder="Enter the poster URL"
-        defaultValue={series?.poster_path}
+        defaultValue={state.values?.poster_url ?? series?.poster_path}
         required={false}
         error={state.errors?.poster_path?.[0]}
         readonly={isReadyOnly}

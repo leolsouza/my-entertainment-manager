@@ -33,6 +33,11 @@ export async function handleFavoriteSeries(
       success: false,
       message: "Validation failed",
       errors: z.flattenError(validationResult.error).fieldErrors,
+      values: {
+        name,
+        first_air_date: first_air_date ?? "",
+        poster_url: poster_path ?? "",
+      },
     }
   }
 
