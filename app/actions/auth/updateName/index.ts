@@ -23,6 +23,7 @@ export async function updateName(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Validation failed",
         errors: z.flattenError(validationResult.error).fieldErrors,
+        values: { name },
       }
     }
 

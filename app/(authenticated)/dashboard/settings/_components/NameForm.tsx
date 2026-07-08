@@ -44,7 +44,7 @@ export default function NameForm({ defaultName }: Props) {
         type="text"
         value="name"
         placeholder="Enter your name"
-        defaultValue={defaultName}
+        defaultValue={state.values?.name ?? defaultName}
         disabled={isPending}
         error={state.errors?.name?.[0]}
       />
