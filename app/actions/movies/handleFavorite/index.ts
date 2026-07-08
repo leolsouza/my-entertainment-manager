@@ -33,6 +33,7 @@ export async function handleFavoriteMovie(
       success: false,
       message: "Validation failed",
       errors: z.flattenError(validationResult.error).fieldErrors,
+      values: { title, release_date: release_date ?? "", overview },
     }
   }
 

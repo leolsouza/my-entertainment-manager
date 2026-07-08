@@ -56,7 +56,7 @@ export default function FormMovie({
         label="Title"
         value="title"
         placeholder="Enter the movie title"
-        defaultValue={movie?.title}
+        defaultValue={state.values?.title ?? movie?.title}
         error={state.errors?.title?.[0]}
         readonly={isReadyOnly}
       />
@@ -65,7 +65,7 @@ export default function FormMovie({
         value="release_date"
         type="date"
         placeholder="Enter the release date"
-        defaultValue={defaultReleaseDate}
+        defaultValue={state.values?.release_date ?? defaultReleaseDate}
         error={state.errors?.release_date?.[0]}
         required={false}
         readonly={isReadyOnly}
@@ -74,7 +74,7 @@ export default function FormMovie({
         label="Overview"
         value="overview"
         placeholder="Enter the movie overview"
-        defaultValue={movie?.overview}
+        defaultValue={state.values?.overview ?? movie?.overview}
         error={state.errors?.overview?.[0]}
         required={false}
         readonly={isReadyOnly}
