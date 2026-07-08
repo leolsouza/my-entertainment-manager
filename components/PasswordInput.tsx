@@ -31,7 +31,13 @@ export default function PasswordInput({
   }
   return (
     <div className="space-y-2">
-      <Label htmlFor={value} className={cn(error && "text-red-500")}>
+      <Label
+        htmlFor={value}
+        className={cn(
+          error && "text-red-500",
+          required && "after:ml-1 after:text-red-500 after:content-['*']"
+        )}
+      >
         {label}
       </Label>
       <div className="relative">
