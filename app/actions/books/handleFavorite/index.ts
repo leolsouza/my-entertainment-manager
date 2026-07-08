@@ -33,6 +33,11 @@ export async function handleFavoriteBook(
       success: false,
       message: "Validation failed",
       errors: z.flattenError(validationResult.error).fieldErrors,
+      values: {
+        title,
+        published_date: published_date ?? "",
+        poster_url: poster_url ?? "",
+      },
     }
   }
 

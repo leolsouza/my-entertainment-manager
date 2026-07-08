@@ -51,7 +51,7 @@ export default function FormBook({
         label="Title"
         value="title"
         placeholder="Enter the book title"
-        defaultValue={book?.title}
+        defaultValue={state.values?.title ?? book?.title}
         error={state.errors?.title?.[0]}
         readonly={isReadyOnly}
       />
@@ -60,7 +60,7 @@ export default function FormBook({
         value="published_date"
         type="text"
         placeholder="Enter the published year (e.g. 2023)"
-        defaultValue={book?.publishedDate}
+        defaultValue={state.values?.published_date ?? book?.publishedDate}
         error={state.errors?.published_date?.[0]}
         required={false}
         readonly={isReadyOnly}
@@ -70,7 +70,7 @@ export default function FormBook({
         value="poster_url"
         type="url"
         placeholder="Enter the poster URL"
-        defaultValue={book?.thumbnail}
+        defaultValue={state.values?.poster_url ?? book?.thumbnail}
         error={state.errors?.poster_url?.[0]}
         required={false}
         readonly={isReadyOnly}
