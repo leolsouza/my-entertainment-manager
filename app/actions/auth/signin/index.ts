@@ -20,6 +20,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Validation failed",
         errors: z.flattenError(validationResult.error).fieldErrors,
+        values: { email },
       }
     }
 
@@ -30,6 +31,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Invalid email or password",
         error: "User not found",
+        values: { email },
       }
     }
 
@@ -39,6 +41,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Invalid email or password",
         error: "Wrong password",
+        values: { email },
       }
     }
 

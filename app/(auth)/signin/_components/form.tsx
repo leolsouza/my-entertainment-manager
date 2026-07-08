@@ -50,6 +50,7 @@ export default function SignInForm() {
         type="email"
         value="email"
         placeholder="Enter your email"
+        defaultValue={state.values?.email}
         disabled={isPending}
         error={state.errors?.email?.[0]}
       />
