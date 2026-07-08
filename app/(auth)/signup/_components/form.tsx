@@ -42,6 +42,7 @@ export default function SignUpForm() {
         type="text"
         value="name"
         placeholder="Enter your name"
+        defaultValue={state.values?.name}
         disabled={isPending}
         error={state.errors?.name?.[0]}
       />
@@ -50,6 +51,7 @@ export default function SignUpForm() {
         type="email"
         value="email"
         placeholder="Enter your email"
+        defaultValue={state.values?.email}
         disabled={isPending}
         error={state.errors?.email?.[0]}
       />

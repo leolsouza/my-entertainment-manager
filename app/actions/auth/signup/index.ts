@@ -27,6 +27,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Validation failed",
         errors: z.flattenError(validationResult.error).fieldErrors,
+        values: { name, email },
       }
     }
 
@@ -40,6 +41,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
         success: false,
         message: "Email already in use",
         error: "Email already in use",
+        values: { name, email },
       }
     }
 
