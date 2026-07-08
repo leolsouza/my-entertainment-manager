@@ -1,4 +1,12 @@
-import { User2, EthernetPort, Book, Video, LayoutDashboard } from "lucide-react"
+"use client"
+
+import {
+  LogOut,
+  EthernetPort,
+  Book,
+  Video,
+  LayoutDashboard,
+} from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -11,11 +19,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "./ui/sidebar"
 import Logo from "@/assets/logo.png"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { AuthUser } from "@/types/auth"
+import { getInitials } from "@/utils/get-initials"
 
 const discoverRoutes = [
   {
@@ -58,14 +70,23 @@ type AppSidebarProps = {
 }
 
 export default function AppSidebar({ authUser }: AppSidebarProps) {
+  const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
+  const closeOnMobile = () => {
+    if (isMobile) setOpenMobile(false)
+  }
+
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="py-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <Image src={Logo} alt="logo" width={300} priority />
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarHeader className="flex-row items-center justify-between gap-2 py-4">
+        <Image
+          src={Logo}
+          alt="logo"
+          width={160}
+          priority
+          className="h-auto w-auto max-w-[9rem] group-data-[collapsible=icon]:hidden"
+        />
+        <SidebarTrigger />
       </SidebarHeader>
       <SidebarSeparator style={{ width: "auto" }} />
       <SidebarContent>
@@ -73,8 +94,12 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard">
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/dashboard"}
+                  tooltip="Overview"
+                >
+                  <Link href="/dashboard" onClick={closeOnMobile}>
                     <LayoutDashboard />
                     <span>Overview</span>
                   </Link>
@@ -89,8 +114,12 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
             <SidebarMenu>
               {favoriteRoutes.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.url}
+                    tooltip={item.title}
+                  >
+                    <Link href={item.url} onClick={closeOnMobile}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -106,8 +135,12 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
             <SidebarMenu>
               {discoverRoutes.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.url}
+                    tooltip={item.title}
+                  >
+                    <Link href={item.url} onClick={closeOnMobile}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -123,16 +156,30 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/settings">
-                <User2 className="size-4" />
-                <span>{authUser?.name}</span>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === "/dashboard/settings"}
+              tooltip={authUser?.name}
+              size="lg"
+            >
+              <Link href="/dashboard/settings" onClick={closeOnMobile}>
+                <span className="bg-sidebar-primary text-sidebar-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                  {getInitials(authUser?.name)}
+                </span>
+                <span className="truncate">{authUser?.name}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem className="mt-2">
-            <SidebarMenuButton asChild>
-              <Link href="/signin">Logout</Link>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip="Logout"
+              className="text-muted-foreground"
+            >
+              <Link href="/signin" onClick={closeOnMobile}>
+                <LogOut />
+                <span>Logout</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

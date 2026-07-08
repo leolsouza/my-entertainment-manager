@@ -11,12 +11,7 @@ import { getAuthUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import NameForm from "./_components/NameForm"
 import PasswordForm from "./_components/PasswordForm"
-
-function getInitials(name: string) {
-  const parts = name.trim().split(/\s+/)
-  const initials = parts.length > 1 ? [parts[0], parts[parts.length - 1]] : parts
-  return initials.map((part) => part[0]?.toUpperCase()).join("")
-}
+import { getInitials } from "@/utils/get-initials"
 
 export default async function SettingsPage() {
   const authUser = await getAuthUser()

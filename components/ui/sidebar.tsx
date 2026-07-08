@@ -258,7 +258,7 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  const { state, toggleSidebar } = useSidebar()
 
   return (
     <Button
@@ -266,14 +266,19 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("size-7", className)}
+      className={cn("group/trigger size-7", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      <PanelLeftIcon
+        className={cn(
+          "transition-transform duration-200 ease-in-out group-hover/trigger:scale-110",
+          state === "collapsed" && "rotate-180"
+        )}
+      />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
