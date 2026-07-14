@@ -53,8 +53,7 @@ export async function fetchFavoriteBooks({
   const PAGE_SIZE = 15
   const authUser = await getAuthUser()
 
-  if (!authUser)
-    return { results: [], page, total_pages: 0, total_results: 0 }
+  if (!authUser) return { results: [], page, total_pages: 0, total_results: 0 }
 
   const offset = (page - 1) * PAGE_SIZE
 
