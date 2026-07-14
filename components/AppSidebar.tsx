@@ -28,6 +28,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { AuthUser } from "@/types/auth"
 import { getInitials } from "@/utils/get-initials"
+import { signOut } from "@/app/actions/auth/signout"
 
 const discoverRoutes = [
   {
@@ -171,16 +172,16 @@ export default function AppSidebar({ authUser }: AppSidebarProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip="Logout"
-              className="text-muted-foreground"
-            >
-              <Link href="/signin" onClick={closeOnMobile}>
+            <form action={signOut}>
+              <SidebarMenuButton
+                type="submit"
+                tooltip="Logout"
+                className="text-muted-foreground w-full"
+              >
                 <LogOut />
                 <span>Logout</span>
-              </Link>
-            </SidebarMenuButton>
+              </SidebarMenuButton>
+            </form>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
